@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supervisor", "Supervisor\Supervisor.csproj", "{4401BFF2-5237-4625-90ED-751EECC1792F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supervisor.IntegrationTests", "Supervisor.IntegrationTests\Supervisor.IntegrationTests.csproj", "{61BABD49-E382-4FC8-B317-8DFDCCE11845}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Supervisor.UnitTests", "Supervisor.UnitTests\Supervisor.UnitTests.csproj", "{B19371DF-0C46-4228-8F8A-C33C9A28E291}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4401BFF2-5237-4625-90ED-751EECC1792F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4401BFF2-5237-4625-90ED-751EECC1792F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4401BFF2-5237-4625-90ED-751EECC1792F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4401BFF2-5237-4625-90ED-751EECC1792F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61BABD49-E382-4FC8-B317-8DFDCCE11845}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61BABD49-E382-4FC8-B317-8DFDCCE11845}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61BABD49-E382-4FC8-B317-8DFDCCE11845}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61BABD49-E382-4FC8-B317-8DFDCCE11845}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B19371DF-0C46-4228-8F8A-C33C9A28E291}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B19371DF-0C46-4228-8F8A-C33C9A28E291}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B19371DF-0C46-4228-8F8A-C33C9A28E291}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B19371DF-0C46-4228-8F8A-C33C9A28E291}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
