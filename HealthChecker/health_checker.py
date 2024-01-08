@@ -9,7 +9,7 @@ task_queue = [
     {
         "TaskId": str(uuid.uuid4()),
         "MonitoredHttpServiceConfiguration": {
-            "url": "https://www.google.com/",
+            "url": "https://www.google1.com/",
             "timeoutMs": 5000,
             "frequencyMs": 10000  # 10 seconds for example
         },
