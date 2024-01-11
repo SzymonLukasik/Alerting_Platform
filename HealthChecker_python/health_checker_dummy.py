@@ -2,7 +2,7 @@ import asyncio
 import aiohttp
 import uuid
 from datetime import datetime, timedelta
-
+import json
 
 # Simulated task queue
 task_queue = [
@@ -14,12 +14,13 @@ task_queue = [
             "frequencyMs": 10000  # 10 seconds for example
         },
         "ResourceCost": 10,  # Example resource cost
-        "MonitorFrom": datetime.utcnow(),
-        "MonitorTo": datetime.utcnow() + timedelta(minutes=15)
+        "MonitorFrom": datetime.utcnow().timestamp(),
+        "MonitorTo": (datetime.utcnow() + timedelta(minutes=15)).timestamp()
     },
     # Add more tasks as needed
 ]
-
+print (json.dumps(task_queue[0], indent=4))
+exit()
 async def monitor_service(task, session):
     config = task["MonitoredHttpServiceConfiguration"]
     end_time = task["MonitorTo"]
@@ -44,3 +45,14 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+{
+    "TaskId": "3f0ee84a-8d05-4fa3-a004-de32e4926afe",
+    "MonitoredHttpServiceConfiguration": {
+        "url": "https://www.google1.com/",
+        "timeoutMs": 5000,
+        "frequencyMs": 10000
+    },
+    "ResourceCost": 10,
+    "MonitorFrom": 1704042766.818947,
+    "MonitorTo": 1704043666.818947
+}

@@ -1,0 +1,26 @@
+{
+    "TaskId": "058e3121-4354-4136-a18e-4a97b1a9e751",
+    "MonitoredHttpServiceConfiguration": {
+        "Url": "https://www.google.com",
+        "TimeoutMs": 1000,
+        "FrequencyMs": 10000,
+        "url": "https://www.google.com",
+        "timeoutMs": 1000,
+        "frequencyMs": 10000
+    },
+    "ResourceCost": 10,
+    "MonitorFrom": 1.704640363902013E9,
+    "MonitorTo": 1.704640423902013E9,
+    "resourceCost": 10,
+    "monitorTo": 1.704640423902013E9,
+    "monitorFrom": 1.704640363902013E9,
+    "taskId": "058e3121-4354-4136-a18e-4a97b1a9e751",
+    "monitoredHttpServiceConfiguration": {
+        "Url": "https://www.google.com",
+        "TimeoutMs": 1000,
+        "FrequencyMs": 10000,
+        "url": "https://www.google.com",
+        "timeoutMs": 1000,
+        "frequencyMs": 10000
+    }
+}
