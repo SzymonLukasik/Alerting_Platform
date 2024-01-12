@@ -1,3 +1,4 @@
+package service;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.api.gax.rpc.ApiException;
@@ -5,11 +6,17 @@ import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.Subscriber;
 import com.google.pubsub.v1.ProjectSubscriptionName;
 import com.google.pubsub.v1.PubsubMessage;
+
+import config.HealthCheckerConfiguration;
+import events.external.Task;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.Message;
+
+import java.util.Map;
 
 public class HealthCheckerService {
     private HealthCheckerConfiguration config;
@@ -23,14 +30,14 @@ public class HealthCheckerService {
     }
 
     private void subscribeToPubSub(Vertx vertx) {
-        ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(config.projectID, config.subscriptionID);
+        ProjectSubscriptionName subscriptionName = ProjectSubscriptionName.of(config.getProjectID(), config.getSubscriptionID());
         Subscriber subscriber = null;
         try {
             subscriber = Subscriber.newBuilder(subscriptionName, (PubsubMessage message, AckReplyConsumer consumer) -> {
                 try {
                     Task task = parseTask(message.getData().toStringUtf8());
                     logger.info("Received task: " + task.toJson());
-                    if (currentResourceUsage.get() + task.getResourceCost() <= config.maxResourceCost) {
+                    if (currentResourceUsage.get() + task.getResourceCost() <= config.getMaxResourceCost()) {
                         logger.info("Resource available, sending task to queue");
                         currentResourceUsage.addAndGet(task.getResourceCost());
                         logger.info("Current resource usage: " + currentResourceUsage.get());
@@ -69,17 +76,37 @@ public class HealthCheckerService {
         currentResourceUsage.addAndGet(-freedResource);
         logger.info("Current resource usage: " + currentResourceUsage.get());
     }
-    
-    public static void main(String[] args) {
-        Vertx vertx = Vertx.vertx();
-        HealthCheckerConfiguration config = new HealthCheckerConfiguration();
-        HealthCheckerService healthChecker = new HealthCheckerService(config);
 
-        vertx.eventBus().consumer("resource.free", healthChecker::receiveResourceFreeMessage);
+    private static HealthCheckerConfiguration loadConfig()
+    {
+        Map<String, HealthCheckerConfiguration> configMap = HealthCheckerConfiguration.loadConfigs();
+        String environment = System.getProperty("ENVIRONMENT");
+        if (environment == null) {
+            throw new RuntimeException("Environment variable ENVIRONMENT not set");
+        }
+        HealthCheckerConfiguration config = configMap.get(environment);
+        if (config == null) {
+            throw new RuntimeException("No configuration found for environment " + environment);
+        }
+        return config;
+    }
+
+    public void run()
+    {
+        Vertx vertx = Vertx.vertx();
+
+        vertx.eventBus().consumer("resource.free", this::receiveResourceFreeMessage);
 
         vertx.deployVerticle(new HealthCheckerExecutor());
         vertx.deployVerticle(new HealthCheckerLogger(config));
         
-        healthChecker.subscribeToPubSub(vertx);
+        subscribeToPubSub(vertx);
+    }
+
+    public static void start()
+    {
+        HealthCheckerConfiguration config = HealthCheckerService.loadConfig();
+        HealthCheckerService healthChecker = new HealthCheckerService(config);
+        healthChecker.run();
     }
 }

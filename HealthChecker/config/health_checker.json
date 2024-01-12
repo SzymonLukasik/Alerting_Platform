@@ -1,0 +1,12 @@
+{
+    "DEV": {
+        "projectID": "irio-402819",
+        "subscriptionID": "tasks-sub",
+        "connectionString": "jdbc:mysql://34.118.111.98:3306/alerting",
+        "dbUser": "root",
+        "dbPassword": "FILL",
+        "maxResourceCost": 100,
+        "dbWriteBatchSize": 100,
+        "dbMinimumWriteDelayMs": 5000
+    }
+}

@@ -7,7 +7,7 @@ db_config = {
     'user': 'root',
     'password': 'FILL',
     'db': 'alerting',
-    'host': '34.34.131.205',
+    'host': '34.118.111.98',
     'port': 3306,
 }
 

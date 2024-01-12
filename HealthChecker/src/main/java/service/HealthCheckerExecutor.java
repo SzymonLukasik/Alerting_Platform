@@ -1,3 +1,4 @@
+package service;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.HttpResponse;
@@ -7,6 +8,10 @@ import java.time.Instant;
 import java.util.stream.IntStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import events.external.Task;
+import events.internal.Call;
+import events.internal.CallResult;
 import io.vertx.core.eventbus.Message;
 
 public class HealthCheckerExecutor extends AbstractVerticle {

@@ -93,7 +93,7 @@ def publishTask(task):
     print(f"Publishing: {data}")
     return publisher.publish(topic_path, data=data)
 
-PERCENTAGE = 1.0
+PERCENTAGE = 0.1
 
 def main():
     print(f"Publishing {len(tasks_com)} .com and {len(tasks_pl)} tasks to {topic_path}.")
