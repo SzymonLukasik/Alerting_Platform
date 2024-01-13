@@ -1,5 +1,5 @@
 # Use an official Maven runtime as a parent image
-FROM maven:3.6.3-openjdk-11
+FROM maven:3.6.3-openjdk-17
 
 # Set the working directory in the container
 WORKDIR /usr/src/app
@@ -11,4 +11,4 @@ COPY . .
 RUN mvn package
 
 # Run the jar file
-CMD ["java", "-jar", "target/healthchecker-1.0-SNAPSHOT.jar"]
+CMD ["java", "-jar", "target/healthchecker-1.0-SNAPSHOT-jar-with-dependencies.jar"]
