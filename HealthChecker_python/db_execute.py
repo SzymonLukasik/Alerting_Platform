@@ -16,7 +16,7 @@ async def connect_to_db():
     pool = await aiomysql.create_pool(**db_config)
     async with pool.acquire() as conn:
         async with conn.cursor() as cursor:
-            await cursor.execute("SHOW CREATE TABLE calls_copy")
+            await cursor.execute("SELECT COUNT(*) FROM calls_copy ")
             print(await cursor.fetchall())
 
 

@@ -2,7 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: healthchecker
-  app: healthchecker
+  labels:
+    app: healthchecker
 spec:
   replicas: 1
   selector:
@@ -18,3 +19,14 @@ spec:
         image: us-central1-docker.pkg.dev/irio-402819/mimuw-labs/healthchecker:v1
         ports:
         - containerPort: 8080
+        volumeMounts:
+        - name: google-cloud-keys
+          mountPath: /var/secrets/google
+          readOnly: true
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /var/secrets/google/application_default_credentials.json
+      volumes:
+      - name: google-cloud-keys
+        secret:
+          secretName: google-cloud-keys
