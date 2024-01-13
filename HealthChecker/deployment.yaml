@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: healthchecker
+  app: healthchecker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: healthchecker
+  template:
+    metadata:
+      labels:
+        app: healthchecker
+    spec:
+      containers:
+      - name: healthchecker
+        image: us-central1-docker.pkg.dev/irio-402819/mimuw-labs/healthchecker:v1
+        ports:
+        - containerPort: 8080
