@@ -13,6 +13,8 @@ import events.external.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.grpc.LoadBalancerRegistry;
+import io.grpc.internal.PickFirstLoadBalancerProvider;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.Message;
 
@@ -93,6 +95,7 @@ public class HealthCheckerService {
 
     public void run()
     {
+        LoadBalancerRegistry.getDefaultRegistry().register(new PickFirstLoadBalancerProvider());
         Vertx vertx = Vertx.vertx();
 
         vertx.eventBus().consumer("resource.free", this::receiveResourceFreeMessage);

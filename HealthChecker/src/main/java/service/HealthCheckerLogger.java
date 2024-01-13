@@ -5,8 +5,8 @@ import io.vertx.ext.jdbc.JDBCClient;
 import io.vertx.core.json.JsonObject;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
+// import java.util.concurrent.CompletableFuture;
+// import java.util.concurrent.CompletionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,24 +41,24 @@ public class HealthCheckerLogger extends AbstractVerticle {
     }
 
     private void doWarmup() {
-        CompletableFuture<Void> future = new CompletableFuture<>();
+        // CompletableFuture<Void> future = new CompletableFuture<>();
 
         dbClient.getConnection(ar -> {
             if (ar.succeeded()) {
                 logger.info("Successfully connected to database");
                 ar.result().close();
-                future.complete(null);
+                // future.complete(null);
             } else {
                 logger.error("Error connecting to database: " + ar.cause().getMessage());
-                future.completeExceptionally(ar.cause());
+                // future.completeExceptionally(ar.cause());
             }
         });
 
-        try {
-            future.join();
-        } catch (CompletionException e) {
-            logger.error("Error while waiting for database connection", e);
-        }
+        // try {
+        //     future.join();
+        // } catch (CompletionException e) {
+        //     logger.error("Error while waiting for database connection", e);
+        // }
     }
 
     private void receiveHealthCheckMessage(Message<String> message) {
