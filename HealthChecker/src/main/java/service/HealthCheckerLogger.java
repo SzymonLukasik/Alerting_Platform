@@ -41,25 +41,25 @@ public class HealthCheckerLogger extends AbstractVerticle {
     }
 
     private void doWarmup() {
-    CompletableFuture<Void> future = new CompletableFuture<>();
+        CompletableFuture<Void> future = new CompletableFuture<>();
 
-    dbClient.getConnection(ar -> {
-        if (ar.succeeded()) {
-            logger.info("Successfully connected to database");
-            ar.result().close();
-            future.complete(null);
-        } else {
-            logger.error("Error connecting to database: " + ar.cause().getMessage());
-            future.completeExceptionally(ar.cause());
+        dbClient.getConnection(ar -> {
+            if (ar.succeeded()) {
+                logger.info("Successfully connected to database");
+                ar.result().close();
+                future.complete(null);
+            } else {
+                logger.error("Error connecting to database: " + ar.cause().getMessage());
+                future.completeExceptionally(ar.cause());
+            }
+        });
+
+        try {
+            future.join();
+        } catch (CompletionException e) {
+            logger.error("Error while waiting for database connection", e);
         }
-    });
-
-    try {
-        future.join();
-    } catch (CompletionException e) {
-        logger.error("Error while waiting for database connection", e);
     }
-}
 
     private void receiveHealthCheckMessage(Message<String> message) {
         logger.info( "Received message: " + message.body());
