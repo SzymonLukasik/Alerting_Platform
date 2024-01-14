@@ -6,10 +6,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using CloudNative.CloudEvents;
 using Google.Cloud.Functions.Framework;
+using Google.Cloud.SecretManager.V1;
 using Google.Events.Protobuf.Cloud.PubSub.V1;
 using Microsoft.Extensions.Logging;
 using RestSharp;
 using RestSharp.Authenticators;
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
+using Twilio.Types;
 
 public class PubSubMessageSender : ICloudEventFunction<MessagePublishedData>
 {
@@ -19,12 +23,18 @@ public class PubSubMessageSender : ICloudEventFunction<MessagePublishedData>
     };
 
     private readonly ILogger<PubSubMessageSender> _logger;
+    private readonly string _projectId;
     private readonly string _mailgunApiKey;
+    private readonly string _twilioAccountSid;
+    private readonly string _twilioAccountToken;
 
     public PubSubMessageSender(ILogger<PubSubMessageSender> logger)
     {
         _logger = logger;
-        _mailgunApiKey = Environment.GetEnvironmentVariable("MAILGUN_API_KEY");
+        _projectId = Environment.GetEnvironmentVariable("GOOGLE_CLOUD_PROJECT");
+        _mailgunApiKey = GetMailgunApiKey();
+        _twilioAccountSid = GetTwilioAccountSid();
+        _twilioAccountToken = GetTwilioAccountToken();
     }
 
     public async Task HandleAsync(CloudEvent cloudEvent, MessagePublishedData data, CancellationToken cancellationToken)
@@ -51,15 +61,24 @@ public class PubSubMessageSender : ICloudEventFunction<MessagePublishedData>
         }
 
         _logger.LogInformation(
-            "Received SendEmailReqeust: ChannelType: {ChannelType}, To: {To}, Subject: {Subject}, Body: {Body}",
+            "Received SendMessageRequest: ChannelType: {ChannelType}, To: {To}, Subject: {Subject}, Body: {Body}",
             sendMessageRequest.ChannelType,
             sendMessageRequest.To,
             sendMessageRequest.Subject,
             sendMessageRequest.Body);
 
-        if (sendMessageRequest.ChannelType == MessageChannelType.Email)
+        switch (sendMessageRequest.ChannelType)
         {
-            await SendEmail(sendMessageRequest);
+            case MessageChannelType.Email:
+                await SendEmail(sendMessageRequest);
+                break;
+            case MessageChannelType.Sms:
+                await SendSms(sendMessageRequest);
+                break;
+            case MessageChannelType.Log:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
     }
 
@@ -100,5 +119,41 @@ public class PubSubMessageSender : ICloudEventFunction<MessagePublishedData>
         }
 
         _logger.LogInformation("Sent email to {To}", sendMessageRequest.To);
+    }
+
+    private async Task SendSms(SendMessageRequest sendMessageRequest)
+    {
+        TwilioClient.Init(_twilioAccountSid, _twilioAccountToken);
+
+        var message = await MessageResource.CreateAsync(
+            body: sendMessageRequest.Body,
+            from: new PhoneNumber("+48500182548"),
+            to: new PhoneNumber(sendMessageRequest.To)
+        );
+
+        if (message.ErrorCode != null)
+        {
+            _logger.LogError(
+                "Failed to send SMS to {To}: {ErrorCode} {ErrorMessage}",
+                sendMessageRequest.To,
+                message.ErrorCode,
+                message.ErrorMessage);
+        }
+
+        _logger.LogInformation("Sent SMS to {To}", sendMessageRequest.To);
+    }
+    
+    public string GetMailgunApiKey() => GetSecret("MAILGUN_API_KEY");
+    
+    public string GetTwilioAccountSid() => GetSecret("TWILIO_ACCOUNT_SID");
+
+    public string GetTwilioAccountToken() => GetSecret("TWILIO_AUTH_TOKEN");
+
+    private string GetSecret(string secretId, string versionId = "latest")
+    {
+        var client = SecretManagerServiceClient.Create();
+        var secretVersionName = new SecretVersionName(_projectId, secretId, versionId);
+        var result = client.AccessSecretVersion(secretVersionName);
+        return result.Payload.Data.ToStringUtf8();
     }
 }

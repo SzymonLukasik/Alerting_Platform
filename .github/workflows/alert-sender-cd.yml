@@ -1,0 +1,30 @@
+name: Alert-Sender-CD
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 'Checkout'
+      uses: 'actions/checkout@v4'
+
+    - name: 'Auth'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        project_id: 'inrio-401514'
+        credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+    - name: 'Deploy'
+      uses: 'google-github-actions/deploy-cloud-functions@v2'
+      with:
+        name: 'Alert-Sender'
+        runtime: 'dotnet8'
+        entry_point: 'AlertSender.PubSubMessageSender'
+        source_dir: './AlertSender/AlertSender'
+        env_vars_file: './AlertSender/AlertSender/scripts/env.yaml'
+        event_trigger_type: "google.pubsub.topic.publish"
+        event_trigger_resource: "projects/inrio-401514/topics/messages"
+        event_trigger_service: "pubsub.googleapis.com"
