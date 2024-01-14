@@ -104,5 +104,13 @@ def main():
         result = publishTask(task).result()
         print(result)
 
+def test_autoscaling():
+    task = getTask("https://www.facebook.com", 1000, ResourceCost=10, timedeltaMinutes=10)
+    print(f"Publishing task {task}")
+    for i in range(20):
+        result = publishTask(task).result()
+        print(result)
+
 if __name__ == "__main__":
-    main()
+    # main()
+    test_autoscaling()
