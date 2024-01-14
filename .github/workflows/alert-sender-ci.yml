@@ -1,4 +1,4 @@
-name: Supervisor-CI
+name: Alert-Sender-CI
 
 on:
   workflow_dispatch:
@@ -17,8 +17,8 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies
-      run: dotnet restore Supervisor
+      run: dotnet restore AlertSender
     - name: Build
-      run: dotnet build --no-restore Supervisor
+      run: dotnet build --no-restore AlertSender
     - name: Test
-      run: dotnet test --no-build --verbosity normal Supervisor
+      run: dotnet test --no-build --verbosity normal AlertSender
