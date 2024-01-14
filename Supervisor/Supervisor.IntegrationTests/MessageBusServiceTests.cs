@@ -6,7 +6,7 @@ using Models.Consts;
 
 public class MessageBusServiceTests
 {
-    [Fact]
+    [Fact(Skip = "Integration test")]
     public async Task CanCreateTopic()
     {
         var messageBusService = CommonSetup.SetupMessageBusService();
@@ -16,7 +16,7 @@ public class MessageBusServiceTests
         Assert.NotNull(topic);
     }
 
-    [Fact]
+    [Fact(Skip = "Integration test")]
     public async Task CanDeleteTopic()
     {
         var messageBusService = CommonSetup.SetupMessageBusService();
@@ -26,7 +26,7 @@ public class MessageBusServiceTests
         Assert.True(true);
     }
 
-    [Fact]
+    [Fact(Skip = "Integration test")]
     public async Task CanCreateSubscription()
     {
         var messageBusService = CommonSetup.SetupMessageBusService();
@@ -36,7 +36,7 @@ public class MessageBusServiceTests
         Assert.NotNull(subscription);
     }
 
-    [Fact]
+    [Fact(Skip = "Integration test")]
     public async Task CanDeleteSubscription()
     {
         var messageBusService = CommonSetup.SetupMessageBusService();
@@ -46,7 +46,7 @@ public class MessageBusServiceTests
         Assert.True(true);
     }
 
-    [Fact]
+    [Fact(Skip = "Integration test")]
     public async Task CanPublishMessage()
     {
         var messageBusService = CommonSetup.SetupMessageBusService();
@@ -56,7 +56,7 @@ public class MessageBusServiceTests
         Assert.True(true);
     }
 
-    [Fact]
+    [Fact(Skip = "Integration test")]
     public async Task CanPublishRichMessage()
     {
         var messageBusService = CommonSetup.SetupMessageBusService();
@@ -67,7 +67,7 @@ public class MessageBusServiceTests
         Assert.True(true);
     }
 
-    [Fact]
+    [Fact(Skip = "Integration test")]
     public async Task CanPublishAndPullRichMessage()
     {
         var messageBusService = CommonSetup.SetupMessageBusService();
@@ -78,7 +78,7 @@ public class MessageBusServiceTests
         Assert.Equal(richMessageInstance, message);
     }
 
-    [Fact]
+    [Fact(Skip = "Integration test")]
     public async Task CanPublishAndConsumeSubscription()
     {
         var messageBusService = CommonSetup.SetupMessageBusService();

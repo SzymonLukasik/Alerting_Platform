@@ -38,7 +38,7 @@ public class JobsCostCalculatorService
         return resourceCosts;
     }
 
-    private uint CalculateServiceResourceCost(
+    public uint CalculateServiceResourceCost(
         MonitoredHttpServiceConfiguration service,
         double averageResponseTime)
     {
