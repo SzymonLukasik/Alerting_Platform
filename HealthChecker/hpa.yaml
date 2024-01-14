@@ -1,4 +1,4 @@
-apiVersion: autoscaling/v1
+apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: pubsub
@@ -8,10 +8,10 @@ spec:
   metrics:
   - external:
       metric:
-        name: pubsub.googleapis.com|tasks-sub|num_undelivered_messages
+        name: pubsub.googleapis.com|subscription|num_undelivered_messages
         selector:
           matchLabels:
-            resource.labels.subscription_id: echo-read
+            resource.labels.subscription_id: tasks-sub
       target:
         type: AverageValue
         averageValue: 2
