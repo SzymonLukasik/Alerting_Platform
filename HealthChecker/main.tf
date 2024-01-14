@@ -1,5 +1,17 @@
+# Retrieve an access token as the Terraform runner
+data "google_client_config" "provider" {}
+
+data "google_container_cluster" "my_cluster" {
+  name     = "hello-world"
+  location = "us-central1"
+}
+
 provider "kubernetes" {
-  # Configure the Kubernetes provider
+  host  = "https://${data.google_container_cluster.my_cluster.endpoint}"
+  token = data.google_client_config.provider.access_token
+  cluster_ca_certificate = base64decode(
+    data.google_container_cluster.my_cluster.master_auth[0].cluster_ca_certificate,
+  )
 }
 
 resource "kubernetes_deployment" "example" {
@@ -53,39 +65,6 @@ resource "kubernetes_deployment" "example" {
           secret {
             secret_name = "google-cloud-keys"
           }
-        }
-      }
-    }
-  }
-}
-
-resource "kubernetes_horizontal_pod_autoscaler" "example" {
-  metadata {
-    name = "healthchecker"
-  }
-
-  spec {
-    scale_target_ref {
-      api_version = "apps/v1"
-      kind        = "Deployment"
-      name        = kubernetes_deployment.example.metadata[0].name
-    }
-
-    min_replicas = 1
-    max_replicas = 5
-
-    metric {
-      type = "External"
-      external_metric {
-        metric_name     = "pubsub.googleapis.com/subscription/num_undelivered_messages"
-        metric_selector {
-          match_labels = {
-            "resource.labels.subscription_id" = "tasks-sub"
-          }
-        }
-        target {
-          type  = "AverageValue"
-          value = "2"
         }
       }
     }
