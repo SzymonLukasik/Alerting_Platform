@@ -12,11 +12,11 @@ public class JobsCostCalculatorService
     private readonly List<MonitoredHttpServiceConfiguration> _monitoredHttpServices;
 
     public JobsCostCalculatorService(
-        IConfiguration configuration,
-        IOptions<MonitoredHttpServicesConfiguration> monitoredHttpServices)
+        IOptions<MonitoredHttpServicesConfiguration> monitoredHttpServices,
+        ISecretManagerService secretManagerService)
     {
         _monitoredHttpServices = monitoredHttpServices.Value.UniqueMonitoredHttpServices;
-        _connectionString = configuration.GetConnectionString("MySqlDb");
+        _connectionString = secretManagerService.GetMySqlDbConnectionString();
     }
 
     public async Task<Dictionary<string, uint>> CalculateServicesResourceCosts(DateTime from, DateTime to)

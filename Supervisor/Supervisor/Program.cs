@@ -13,6 +13,7 @@ builder.Services
 
 builder.Services.AddSingleton<JobsCostCalculatorService>();
 builder.Services.AddSingleton<MessageBusService>();
+builder.Services.AddSingleton<ISecretManagerService, SecretManagerService>();
 
 builder.Host
     .AddCronJob<JobDistributionWorker>(

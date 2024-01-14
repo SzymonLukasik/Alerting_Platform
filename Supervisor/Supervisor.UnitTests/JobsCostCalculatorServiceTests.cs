@@ -1,16 +1,17 @@
 namespace Supervisor.UnitTests;
 
 using Configuration;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using Moq;
 using Services;
 
 public class JobsCostCalculatorServiceTests
 {
     private JobsCostCalculatorService GetJobsCostCalculatorServiceInstance()
     {
-        IConfiguration configuration = new ConfigurationBuilder()
-            .Build();
+        var secretManagerServiceMock = new Mock<ISecretManagerService>();
+        secretManagerServiceMock.Setup(x => x.GetMySqlDbConnectionString()).Returns("");
+
         var monitoredHttpServicesConfiguration = new MonitoredHttpServicesConfiguration
         {
             MonitoredHttpServices = new List<MonitoredHttpServiceConfiguration>()
@@ -19,7 +20,9 @@ public class JobsCostCalculatorServiceTests
         var monitoredHttpServicesConfigurationOptions =
             Options.Create(monitoredHttpServicesConfiguration);
 
-        return new JobsCostCalculatorService(configuration, monitoredHttpServicesConfigurationOptions);
+        return new JobsCostCalculatorService(
+            monitoredHttpServicesConfigurationOptions,
+            secretManagerServiceMock.Object);
     }
 
     [Fact]
@@ -34,7 +37,7 @@ public class JobsCostCalculatorServiceTests
         Assert.Throws<Exception>(
             () => jobsCalculatorService.CalculateServiceResourceCost(monitoredHttpServicesConfiguration, 0));
     }
-    
+
     [Fact]
     public void CalculateServiceResourceCost_WhenFrequencyMsIsGreaterThanZero_ReturnsCorrectValue1()
     {
@@ -45,10 +48,10 @@ public class JobsCostCalculatorServiceTests
         };
 
         var result = jobsCalculatorService.CalculateServiceResourceCost(monitoredHttpServicesConfiguration, 0);
-        
+
         Assert.Equal((uint)1, result);
     }
-    
+
     [Fact]
     public void CalculateServiceResourceCost_WhenFrequencyMsIsGreaterThanZero_ReturnsCorrectValue2()
     {
@@ -59,7 +62,7 @@ public class JobsCostCalculatorServiceTests
         };
 
         var result = jobsCalculatorService.CalculateServiceResourceCost(monitoredHttpServicesConfiguration, 0);
-        
+
         Assert.Equal((uint)2, result);
     }
 }

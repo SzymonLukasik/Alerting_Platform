@@ -1,0 +1,21 @@
+name: Supervisor-CD
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    steps:
+    - name: 'Checkout'
+      uses: 'actions/checkout@v4'
+
+    - name: 'Auth'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        project_id: 'inrio-401514'
+        credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+    - name: 'Deploy'
+      uses: 'google-github-actions/deploy-appengine@v2'
+      with:
+        working_directory: './Supervisor/Supervisor'
