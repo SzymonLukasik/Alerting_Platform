@@ -2,7 +2,7 @@
 data "google_client_config" "provider" {}
 
 data "google_container_cluster" "my_cluster" {
-  name     = "hello-world"
+  name     = "hello-cluster"
   location = "us-central1"
 }
 
