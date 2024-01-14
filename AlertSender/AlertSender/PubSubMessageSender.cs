@@ -127,7 +127,7 @@ public class PubSubMessageSender : ICloudEventFunction<MessagePublishedData>
 
         var message = await MessageResource.CreateAsync(
             body: sendMessageRequest.Body,
-            from: new PhoneNumber("+48500182548"),
+            from: new PhoneNumber("+12532168738"),
             to: new PhoneNumber(sendMessageRequest.To)
         );
 
