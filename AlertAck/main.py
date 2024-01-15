@@ -7,7 +7,7 @@ def alert_ack_service(request):
     request_args = request.args
 
     if request_args and 'uuid' in request_args:
-        uuid = request_args['uuid']
+        uuid = escape(request_args['uuid'])  # Escaping the user-provided UUID
     else:
         return 'Missing UUID', 400
 
@@ -16,7 +16,7 @@ def alert_ack_service(request):
         connection = mysql.connector.connect(
             host='34.118.111.98',
             database='alerting',
-            user='root'
+            user='root',
             password='FILL'
         )
 
@@ -30,7 +30,7 @@ def alert_ack_service(request):
             WHERE firstLinkUUID = UNHEX(REPLACE(%s, '-', ''))
             OR secondLinkUUID = UNHEX(REPLACE(%s, '-', ''))
             """
-            cursor.execute(update_query, (uuid, uuid))
+            cursor.execute(update_query, (str(uuid), str(uuid)))
             connection.commit()
             cursor.close()
             connection.close()
