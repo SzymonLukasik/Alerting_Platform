@@ -1,0 +1,1 @@
+gcloud functions deploy alert_ack_service --runtime python310 --trigger-http --allow-unauthenticated --source ./ --entry-point alert_ack_service
