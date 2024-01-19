@@ -7,7 +7,9 @@ using Services;
 
 public class JobsCostCalculatorServiceTests
 {
-    private JobsCostCalculatorService GetJobsCostCalculatorServiceInstance()
+    private JobsCostCalculatorService GetJobsCostCalculatorServiceInstance(
+        double resourceCostFrequencyFactor,
+        double resourceCostResponseTimeFactor)
     {
         var secretManagerServiceMock = new Mock<ISecretManagerService>();
         secretManagerServiceMock.Setup(x => x.GetMySqlDbConnectionString()).Returns("");
@@ -17,18 +19,27 @@ public class JobsCostCalculatorServiceTests
             MonitoredHttpServices = new List<MonitoredHttpServiceConfiguration>()
         };
 
+        var supervisorConfiguration = new SupervisorConfiguration
+        {
+            ResourceCostFrequencyFactor = resourceCostFrequencyFactor,
+            ResourceCostResponseTimeFactor = resourceCostResponseTimeFactor
+        };
+
         var monitoredHttpServicesConfigurationOptions =
             Options.Create(monitoredHttpServicesConfiguration);
 
+        var supervisorConfigurationOptions = Options.Create(supervisorConfiguration);
+
         return new JobsCostCalculatorService(
             monitoredHttpServicesConfigurationOptions,
-            secretManagerServiceMock.Object);
+            secretManagerServiceMock.Object,
+            supervisorConfigurationOptions);
     }
 
     [Fact]
     public void CalculateServiceResourceCost_WhenFrequencyMsIsZero_ThrowsException()
     {
-        var jobsCalculatorService = GetJobsCostCalculatorServiceInstance();
+        var jobsCalculatorService = GetJobsCostCalculatorServiceInstance(1, 1);
         var monitoredHttpServicesConfiguration = new MonitoredHttpServiceConfiguration
         {
             Url = "wp.pl", FrequencyMs = 0
@@ -41,13 +52,13 @@ public class JobsCostCalculatorServiceTests
     [Fact]
     public void CalculateServiceResourceCost_WhenFrequencyMsIsGreaterThanZero_ReturnsCorrectValue1()
     {
-        var jobsCalculatorService = GetJobsCostCalculatorServiceInstance();
+        var jobsCalculatorService = GetJobsCostCalculatorServiceInstance(1, 1);
         var monitoredHttpServicesConfiguration = new MonitoredHttpServiceConfiguration
         {
             Url = "wp.pl", FrequencyMs = 1000
         };
 
-        var result = jobsCalculatorService.CalculateServiceResourceCost(monitoredHttpServicesConfiguration, 0);
+        var result = jobsCalculatorService.CalculateServiceResourceCost(monitoredHttpServicesConfiguration, 1);
 
         Assert.Equal((uint)1, result);
     }
@@ -55,7 +66,7 @@ public class JobsCostCalculatorServiceTests
     [Fact]
     public void CalculateServiceResourceCost_WhenFrequencyMsIsGreaterThanZero_ReturnsCorrectValue2()
     {
-        var jobsCalculatorService = GetJobsCostCalculatorServiceInstance();
+        var jobsCalculatorService = GetJobsCostCalculatorServiceInstance(1000, 0);
         var monitoredHttpServicesConfiguration = new MonitoredHttpServiceConfiguration
         {
             Url = "wp.pl", FrequencyMs = 500

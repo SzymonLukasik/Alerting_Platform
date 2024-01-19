@@ -13,13 +13,15 @@ public class JobDistributionWorker : CronJobService
     private readonly JobsCostCalculatorService _jobsCostCalculatorService;
     private readonly ILogger<JobDistributionWorker> _logger;
     private readonly List<MonitoredHttpServiceConfiguration> _monitoredHttpServices;
+    private readonly SupervisorConfiguration _supervisorConfiguration;
 
     public JobDistributionWorker(
         CronJobConfig<JobDistributionWorker> config,
         ILogger<JobDistributionWorker> logger,
         IOptions<MonitoredHttpServicesConfiguration> monitoredHttpServicesConfiguration,
         JobsCostCalculatorService jobsCostCalculatorService,
-        MessageBusService bus) : base(
+        MessageBusService bus,
+        IOptions<SupervisorConfiguration> supervisorConfiguration) : base(
         config.CronExpression,
         config.InstantJob,
         logger)
@@ -27,6 +29,7 @@ public class JobDistributionWorker : CronJobService
         _logger = logger;
         _jobsCostCalculatorService = jobsCostCalculatorService;
         _bus = bus;
+        _supervisorConfiguration = supervisorConfiguration.Value;
         _monitoredHttpServices = monitoredHttpServicesConfiguration.Value.UniqueMonitoredHttpServices;
     }
 
@@ -34,8 +37,13 @@ public class JobDistributionWorker : CronJobService
     {
         var servicesResourceCosts =
             await _jobsCostCalculatorService.CalculateServicesResourceCosts(
-                DateTime.UtcNow.AddMinutes(-100),
+                DateTime.UtcNow.AddMinutes(-_supervisorConfiguration.CalculateServicesCostForWindowMinutes),
                 DateTime.UtcNow);
+
+        var monitorFrom = DateTime.UtcNow + TimeSpan.FromSeconds(_supervisorConfiguration.MonitorDelaySeconds);
+        var monitorTo = DateTime.UtcNow +
+                        TimeSpan.FromMinutes(_supervisorConfiguration.JobDistributionWorkerIntervalMinutes) +
+                        TimeSpan.FromMinutes(_supervisorConfiguration.MonitorDelaySeconds);
 
         foreach (var monitoredHttpService in _monitoredHttpServices)
         {
@@ -46,8 +54,8 @@ public class JobDistributionWorker : CronJobService
                 TaskId = Guid.NewGuid().ToString(),
                 MonitoredHttpServiceConfiguration = monitoredHttpService,
                 ResourceCost = servicesResourceCosts[monitoredHttpService.Url],
-                MonitorFrom = DateTime.UtcNow,
-                MonitorTo = DateTime.UtcNow.AddMinutes(15)
+                MonitorFrom = monitorFrom,
+                MonitorTo = monitorTo
             };
 
             await _bus.PublishMessage(AppTopic.Tasks, message);

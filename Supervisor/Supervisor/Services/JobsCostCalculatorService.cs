@@ -10,11 +10,14 @@ public class JobsCostCalculatorService
 {
     private readonly string _connectionString;
     private readonly List<MonitoredHttpServiceConfiguration> _monitoredHttpServices;
+    private readonly SupervisorConfiguration _supervisorConfiguration;
 
     public JobsCostCalculatorService(
         IOptions<MonitoredHttpServicesConfiguration> monitoredHttpServices,
-        ISecretManagerService secretManagerService)
+        ISecretManagerService secretManagerService,
+        IOptions<SupervisorConfiguration> supervisorConfiguration)
     {
+        _supervisorConfiguration = supervisorConfiguration.Value;
         _monitoredHttpServices = monitoredHttpServices.Value.UniqueMonitoredHttpServices;
         _connectionString = secretManagerService.GetMySqlDbConnectionString();
     }
@@ -42,14 +45,14 @@ public class JobsCostCalculatorService
         MonitoredHttpServiceConfiguration service,
         double averageResponseTime)
     {
-        var averageResponseTimeFactor = averageResponseTime * 0.005;
+        var averageResponseTimeFactor = averageResponseTime * _supervisorConfiguration.ResourceCostResponseTimeFactor;
 
         if (service.FrequencyMs <= 0)
         {
             throw new Exception("FrequencyMs must be greater than 0");
         }
 
-        var frequencyFactor = 1 / (double)service.FrequencyMs * 1000;
+        var frequencyFactor = 1 / (double)service.FrequencyMs * _supervisorConfiguration.ResourceCostFrequencyFactor;
 
         return (uint)(averageResponseTimeFactor + frequencyFactor);
     }

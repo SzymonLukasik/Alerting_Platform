@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Infra\"/>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Cronos" Version="0.7.1"/>
     <PackageReference Include="Dapper" Version="2.1.24"/>
     <PackageReference Include="Google.Cloud.PubSub.V1" Version="3.9.0"/>

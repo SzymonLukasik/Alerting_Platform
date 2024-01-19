@@ -1,7 +1,6 @@
 using Supervisor.Configuration;
-using Supervisor.Infra.CronJobService;
+using Supervisor.Infra;
 using Supervisor.Services;
-using Supervisor.Workers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,18 +14,9 @@ builder.Services.AddSingleton<JobsCostCalculatorService>();
 builder.Services.AddSingleton<MessageBusService>();
 builder.Services.AddSingleton<ISecretManagerService, SecretManagerService>();
 
-builder.Host
-    .AddCronJob<JobDistributionWorker>(
-        options =>
-        {
-            options.CronExpression = "*/5 * * * *"; // every 5 minutes
-            options.InstantJob = true; // run instantly on startup
-        });
-
-builder.Services.AddHealthChecks();
+builder.SetupJobDistributionWorker();
 
 var app = builder.Build();
-app.MapGet("/", () => "hey hi hello!");
-app.MapHealthChecks("/health");
+app.MapGet("/", () => "app works!");
 
 app.Run();
