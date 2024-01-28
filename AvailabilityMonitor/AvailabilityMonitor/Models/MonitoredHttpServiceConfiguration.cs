@@ -1,4 +1,4 @@
-namespace Supervisor.Configuration;
+namespace AvailabilityMonitor.Models;
 
 public class MonitoredHttpServiceConfiguration
 {

@@ -4,25 +4,26 @@ using Configuration;
 using Dapper;
 using Microsoft.Extensions.Options;
 using Models.Calls;
+using Models.DbModels;
 using MySqlConnector;
 
 public class JobsCostCalculatorService
 {
     private readonly string _connectionString;
-    private readonly List<MonitoredHttpServiceConfiguration> _monitoredHttpServices;
     private readonly SupervisorConfiguration _supervisorConfiguration;
 
     public JobsCostCalculatorService(
-        IOptions<MonitoredHttpServicesConfiguration> monitoredHttpServices,
         ISecretManagerService secretManagerService,
         IOptions<SupervisorConfiguration> supervisorConfiguration)
     {
         _supervisorConfiguration = supervisorConfiguration.Value;
-        _monitoredHttpServices = monitoredHttpServices.Value.UniqueMonitoredHttpServices;
         _connectionString = secretManagerService.GetMySqlDbConnectionString();
     }
 
-    public async Task<Dictionary<string, uint>> CalculateServicesResourceCosts(DateTime from, DateTime to)
+    public async Task<Dictionary<string, uint>> CalculateServicesResourceCosts(
+        IEnumerable<MonitoredService> monitoredServices,
+        DateTime from,
+        DateTime to)
     {
         var averageResponseTimes =
             (await GetAverageResponseTimesOfServicesInTimeRange(from, to)).ToDictionary(
@@ -30,7 +31,7 @@ public class JobsCostCalculatorService
                 x => x.AverageResponseTime);
         var resourceCosts = new Dictionary<string, uint>();
 
-        foreach (var monitoredHttpService in _monitoredHttpServices)
+        foreach (var monitoredHttpService in monitoredServices)
         {
             var averageResponseTime = averageResponseTimes.GetValueOrDefault(monitoredHttpService.Url);
             var resourceCost = CalculateServiceResourceCost(monitoredHttpService, averageResponseTime);
@@ -42,7 +43,7 @@ public class JobsCostCalculatorService
     }
 
     public uint CalculateServiceResourceCost(
-        MonitoredHttpServiceConfiguration service,
+        MonitoredService service,
         double averageResponseTime)
     {
         var averageResponseTimeFactor = averageResponseTime * _supervisorConfiguration.ResourceCostResponseTimeFactor;

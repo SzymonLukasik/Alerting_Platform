@@ -1,6 +1,6 @@
-namespace Supervisor.Configuration;
+namespace AvailabilityMonitor.Models;
 
-using AlertSender;
+using System.Collections.Generic;
 
 public class AdminConfiguration
 {

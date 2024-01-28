@@ -1,12 +1,12 @@
 namespace Supervisor.Models.Messages;
 
-using Configuration;
+using DbModels;
 
 public record MonitorHttpService
 {
     public string TaskId { get; init; }
 
-    public MonitoredHttpServiceConfiguration MonitoredHttpServiceConfiguration { get; init; }
+    public MonitoredService MonitoredHttpServiceConfiguration { get; init; }
 
     public uint ResourceCost { get; init; }
 

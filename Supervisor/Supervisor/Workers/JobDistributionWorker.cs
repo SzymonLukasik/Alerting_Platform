@@ -12,16 +12,16 @@ public class JobDistributionWorker : CronJobService
     private readonly MessageBusService _bus;
     private readonly JobsCostCalculatorService _jobsCostCalculatorService;
     private readonly ILogger<JobDistributionWorker> _logger;
-    private readonly List<MonitoredHttpServiceConfiguration> _monitoredHttpServices;
+    private readonly IMonitoredServicesRepository _monitoredServices;
     private readonly SupervisorConfiguration _supervisorConfiguration;
 
     public JobDistributionWorker(
         CronJobConfig<JobDistributionWorker> config,
         ILogger<JobDistributionWorker> logger,
-        IOptions<MonitoredHttpServicesConfiguration> monitoredHttpServicesConfiguration,
         JobsCostCalculatorService jobsCostCalculatorService,
         MessageBusService bus,
-        IOptions<SupervisorConfiguration> supervisorConfiguration) : base(
+        IOptions<SupervisorConfiguration> supervisorConfiguration,
+        IMonitoredServicesRepository monitoredServices) : base(
         config.CronExpression,
         config.InstantJob,
         logger)
@@ -29,14 +29,17 @@ public class JobDistributionWorker : CronJobService
         _logger = logger;
         _jobsCostCalculatorService = jobsCostCalculatorService;
         _bus = bus;
+        _monitoredServices = monitoredServices;
         _supervisorConfiguration = supervisorConfiguration.Value;
-        _monitoredHttpServices = monitoredHttpServicesConfiguration.Value.UniqueMonitoredHttpServices;
     }
 
     protected override async Task DoWork(CancellationToken stoppingToken)
     {
+        var monitoredServices = (await _monitoredServices.GetAllAsync()).ToList();
+
         var servicesResourceCosts =
             await _jobsCostCalculatorService.CalculateServicesResourceCosts(
+                monitoredServices,
                 DateTime.UtcNow.AddMinutes(-_supervisorConfiguration.CalculateServicesCostForWindowMinutes),
                 DateTime.UtcNow);
 
@@ -45,15 +48,18 @@ public class JobDistributionWorker : CronJobService
                         TimeSpan.FromMinutes(_supervisorConfiguration.JobDistributionWorkerIntervalMinutes) +
                         TimeSpan.FromMinutes(_supervisorConfiguration.MonitorDelaySeconds);
 
-        foreach (var monitoredHttpService in _monitoredHttpServices)
+        foreach (var monitoredService in monitoredServices)
         {
-            _logger.LogInformation("Start processing {ServiceUrl}...", monitoredHttpService.Url);
+            _logger.LogInformation(
+                "Send task for ID {ServiceId} ({ServiceUrl})...",
+                monitoredService.Id,
+                monitoredService.Url);
 
             var message = new MonitorHttpService
             {
                 TaskId = Guid.NewGuid().ToString(),
-                MonitoredHttpServiceConfiguration = monitoredHttpService,
-                ResourceCost = servicesResourceCosts[monitoredHttpService.Url],
+                MonitoredHttpServiceConfiguration = monitoredService,
+                ResourceCost = servicesResourceCosts[monitoredService.Url],
                 MonitorFrom = monitorFrom,
                 MonitorTo = monitorTo
             };
