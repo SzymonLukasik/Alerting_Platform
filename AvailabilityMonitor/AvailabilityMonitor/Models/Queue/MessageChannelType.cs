@@ -1,4 +1,4 @@
-namespace AvailabilityMonitor.Models;
+namespace AvailabilityMonitor.Models.Queue;
 
 public enum MessageChannelType
 {

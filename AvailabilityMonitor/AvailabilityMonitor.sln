@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvailabilityMonitor", "AvailabilityMonitor\AvailabilityMonitor.csproj", "{808D5820-4A88-4154-9F5F-E1E2418168B2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvailabilityMonitor.UnitTests", "AvailabilityMonitor.UnitTests\AvailabilityMonitor.UnitTests.csproj", "{4CA4539E-7E38-4658-8782-407B4492C221}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{808D5820-4A88-4154-9F5F-E1E2418168B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{808D5820-4A88-4154-9F5F-E1E2418168B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{808D5820-4A88-4154-9F5F-E1E2418168B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CA4539E-7E38-4658-8782-407B4492C221}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CA4539E-7E38-4658-8782-407B4492C221}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CA4539E-7E38-4658-8782-407B4492C221}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CA4539E-7E38-4658-8782-407B4492C221}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

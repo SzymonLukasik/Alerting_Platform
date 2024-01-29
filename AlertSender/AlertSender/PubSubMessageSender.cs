@@ -1,6 +1,7 @@
 namespace AlertSender;
 
 using System;
+using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,8 +24,8 @@ public class PubSubMessageSender : ICloudEventFunction<MessagePublishedData>
     };
 
     private readonly ILogger<PubSubMessageSender> _logger;
-    private readonly string _projectId;
     private readonly string _mailgunApiKey;
+    private readonly string _projectId;
     private readonly string _twilioAccountSid;
     private readonly string _twilioAccountToken;
 
@@ -142,9 +143,9 @@ public class PubSubMessageSender : ICloudEventFunction<MessagePublishedData>
 
         _logger.LogInformation("Sent SMS to {To}", sendMessageRequest.To);
     }
-    
+
     public string GetMailgunApiKey() => GetSecret("MAILGUN_API_KEY");
-    
+
     public string GetTwilioAccountSid() => GetSecret("TWILIO_ACCOUNT_SID");
 
     public string GetTwilioAccountToken() => GetSecret("TWILIO_AUTH_TOKEN");

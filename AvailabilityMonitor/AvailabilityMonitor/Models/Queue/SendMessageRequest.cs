@@ -1,6 +1,4 @@
-namespace AlertSender;
-
-using System.Collections.Generic;
+namespace AvailabilityMonitor.Models.Queue;
 
 public class SendMessageRequest
 {

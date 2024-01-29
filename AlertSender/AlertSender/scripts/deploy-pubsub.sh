@@ -4,5 +4,5 @@ gcloud functions deploy csharp-pubsub-function \
 --region=us-west1 \
 --source=. \
 --entry-point=AlertSender.PubSubMessageSender \
---trigger-topic=tasks \
+--trigger-topic=messages \
 --env-vars-file scripts/env.deployment.yaml
