@@ -1,4 +1,4 @@
-name: Alert-Sender-CD
+name: Availability-Monitor-CD
 
 on:
   workflow_dispatch:
@@ -20,11 +20,8 @@ jobs:
     - name: 'Deploy'
       uses: 'google-github-actions/deploy-cloud-functions@v2'
       with:
-        name: 'alert-sender'
+        name: 'availability-monitor'
         runtime: 'dotnet8'
-        entry_point: 'AlertSender.PubSubMessageSender'
-        source_dir: './AlertSender/AlertSender'
-        env_vars_file: './AlertSender/AlertSender/scripts/env.yaml'
-        event_trigger_type: "google.pubsub.topic.publish"
-        event_trigger_resource: "projects/inrio-401514/topics/messages"
-        event_trigger_service: "pubsub.googleapis.com"
+        entry_point: 'AvailabilityMonitor.Function'
+        source_dir: './AvailabilityMonitor/AvailabilityMonitor'
+        env_vars_file: './AvailabilityMonitor/AvailabilityMonitor/scripts/env.yaml'
