@@ -1,4 +1,4 @@
-namespace AvailabilityMonitor.Models.DbModels;
+namespace AdminResponseMonitor.Models.DbModels;
 
 using System;
 
@@ -25,9 +25,9 @@ public class Alert
 
 public enum ResponseStatus
 {
-    WaitingForFirstAdmin = 1,
-    FirstAdminResponded,
-    WaitingForSecondAdmin,
-    SecondAdminResponded,
-    Ignored
+    waiting_for_first_admin = 1,
+    first_admin_responded,
+    waiting_for_second_admin,
+    second_admin_responded,
+    ignored
 }

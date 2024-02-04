@@ -1,4 +1,4 @@
-namespace AvailabilityMonitor.Models.DbModels;
+namespace AdminResponseMonitor.Models.DbModels;
 
 public class MonitoredService
 {

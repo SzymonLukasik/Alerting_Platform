@@ -1,4 +1,4 @@
-namespace AvailabilityMonitor.Models.Queue;
+namespace AdminResponseMonitor.Models.Queue;
 
 public class SendMessageRequest
 {

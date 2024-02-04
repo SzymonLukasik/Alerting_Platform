@@ -1,6 +1,6 @@
-gcloud functions deploy availability-monitor \
+gcloud functions deploy admin-response-monitor \
 --gen2 \
---entry-point=AvailabilityMonitor.Function \
+--entry-point=AdminResponseMonitor.Function \
 --runtime=dotnet8 \
 --region=us-west1 \
 --source=. \

@@ -1,0 +1,27 @@
+name: Admin-Response-Monitor-CD
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 'Checkout'
+      uses: 'actions/checkout@v4'
+
+    - name: 'Auth'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        project_id: 'inrio-401514'
+        credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+    - name: 'Deploy'
+      uses: 'google-github-actions/deploy-cloud-functions@v2'
+      with:
+        name: 'admin-response-monitor'
+        runtime: 'dotnet8'
+        entry_point: 'AdminResponseMonitor.Function'
+        source_dir: './AdminResponseMonitor/AdminResponseMonitor'
+        env_vars_file: './AdminResponseMonitor/AdminResponseMonitor/scripts/env.yaml'

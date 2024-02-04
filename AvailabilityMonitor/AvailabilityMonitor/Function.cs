@@ -70,7 +70,7 @@ public class Function : IHttpFunction
         const string query = $"""
                                   select service_id
                                   from {CallsTable} c
-                                           left join {ServicesTable} s
+                                           inner join {ServicesTable} s
                                                      on c.service_id = s.id
                                   where c.timestamp <= now()
                                     and c.timestamp >= date_sub(now(), interval (s.alerting_window_ms * 1000) second)
@@ -113,7 +113,7 @@ public class Function : IHttpFunction
         await using var command = new MySqlCommand(
             $"insert into {AlertsTable} (service_id, response_status, first_link_uuid, first_alert_time) values (@ServiceId, @ResponseStatus, @FirstLinkUUID, @FirstAlertTime)",
             connection);
-
+        
         foreach (var alert in alerts)
         {
             command.Parameters.Add("@ServiceId", MySqlDbType.Int32).Value = alert.ServiceId;
