@@ -14,10 +14,24 @@ provider "google" {
   zone        = var.zone
 }
 
+resource "random_id" "bucket_prefix" {
+  byte_length = 8
+}
+
+resource "google_storage_bucket" "default" {
+  name          = "${random_id.bucket_prefix.hex}-bucket-tfstate"
+  force_destroy = false
+  location      = "US"
+  storage_class = "STANDARD"
+  versioning {
+    enabled = true
+  }
+}
+
 resource "google_sql_database_instance" "mysql_instance" {
-  name             = "terraform-sql-instance"
+  name             = "alerting-sql2"
   region           = "us-central1"
-  database_version = "MYSQL_5_7"
+  database_version = "MYSQL_8_0"
 
   settings {
     tier = "db-f1-micro"
