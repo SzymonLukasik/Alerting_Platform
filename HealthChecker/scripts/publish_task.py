@@ -113,4 +113,6 @@ def test_autoscaling():
 
 if __name__ == "__main__":
     # main()
-    test_autoscaling()
+    # test_autoscaling()
+    task = getTask("https://www.facebook.com", 1000, ResourceCost=1, timedeltaMinutes=10)
+    print(task)

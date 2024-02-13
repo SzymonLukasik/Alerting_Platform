@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import service.SecretManager;
 
 public class HealthCheckerConfiguration {
     private String projectID;
@@ -82,6 +83,34 @@ public class HealthCheckerConfiguration {
         }
     }
 
+    private void fetchSecrets(SecretManager secretManager) {
+        // check if any of the key starts with the word "SECRET"
+        String newConnectionString = fetchSecret(this.connectionString, secretManager);
+        if (newConnectionString != null) {
+            connectionString = newConnectionString;
+        }
+        String newDbUser = fetchSecret(this.dbUser, secretManager);
+        if (newDbUser != null) {
+            dbUser = newDbUser;
+        }
+        String newDbPassword = fetchSecret(this.dbPassword, secretManager);
+        if (newDbPassword != null) {
+            dbPassword = newDbPassword;
+        }
+    }
+
+    private String fetchSecret(String fieldValue, SecretManager secretManager) {
+        // check if the secret name starts
+        if (fieldValue.startsWith("SECRET")) {
+            // the secret is of form "SECRET:SECRET_NAME"
+            // split
+            String secretName = fieldValue.split(":")[1];
+            String secretValue = secretManager.getSecret(secretName);
+            return secretValue;
+        }
+        return null;
+    }
+
     public static Map<String, HealthCheckerConfiguration> loadConfigs()
     {
         // CONFIGS_PATH contains the path to the configuration file, which contains a map of configuration names to configuration objects
@@ -91,6 +120,11 @@ public class HealthCheckerConfiguration {
         try {
             ObjectMapper mapper = new ObjectMapper();
             configs = mapper.readValue(new File(CONFIGS_PATH), new TypeReference<Map<String, HealthCheckerConfiguration>>() {});
+            // for each configuration, fetch secrets
+            SecretManager secretManager = new SecretManager();
+            for (HealthCheckerConfiguration config : configs.values()) {
+                config.fetchSecrets(secretManager);
+            }
             return configs;
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -1,4 +1,5 @@
 package service;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.api.gax.rpc.ApiException;
@@ -24,11 +25,20 @@ public class HealthCheckerService {
     private HealthCheckerConfiguration config;
     private AtomicInteger currentResourceUsage;
     private static Logger logger = LoggerFactory.getLogger(HealthCheckerService.class);
+    private AtomicBoolean isShuttingDown = new AtomicBoolean(false);
 
 
     HealthCheckerService(HealthCheckerConfiguration config) {
         this.config = config;
         this.currentResourceUsage = new AtomicInteger(0);
+        this.isShuttingDown = new AtomicBoolean(false);
+
+        // Add shutdown hook
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            logger.info("Received SIGTERM, stopping task fetching...");
+            this.isShuttingDown.set(true);
+            // Add code here to push existing tasks to the queue
+        }));
     }
 
     private void subscribeToPubSub(Vertx vertx) {
@@ -109,6 +119,7 @@ public class HealthCheckerService {
     public static void start()
     {
         HealthCheckerConfiguration config = HealthCheckerService.loadConfig();
+        logger.info("Starting HealthCheckerService with config: {}", config.toJson());
         HealthCheckerService healthChecker = new HealthCheckerService(config);
         healthChecker.run();
     }

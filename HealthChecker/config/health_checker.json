@@ -19,4 +19,14 @@
         "dbWriteBatchSize": 100,
         "dbMinimumWriteDelayMs": 5000
     },
+    "DEV_ALEKS_PROJECT": {
+        "projectID": "inrio-401514",
+        "subscriptionID": "tasks-sub",
+        "connectionString": "SECRET:HEALTH_CHECKER_CONNECTION_STRING",
+        "dbUser": "SECRET:HEALTH_CHECKER_DB_USER",
+        "dbPassword": "SECRET:HEALTH_CHECKER_DB_PASSWORD",
+        "maxResourceCost": 10,
+        "dbWriteBatchSize": 100,
+        "dbMinimumWriteDelayMs": 5000
+    }     
 }
