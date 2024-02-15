@@ -16,6 +16,7 @@ public class Task {
     private Integer ResourceCost;
     private String MonitorFrom;
     private String MonitorTo;
+    
 
 
     @JsonCreator
