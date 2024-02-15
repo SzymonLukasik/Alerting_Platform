@@ -29,7 +29,7 @@ def alert_ack_service(request):
                 first_alert_response_time = NOW()
             WHERE first_link_uuid = UNHEX(REPLACE(%s, '-', ''))
             """
-            cursor.execute(update_query, (str(uuid), str(uuid)))
+            cursor.execute(update_query, (str(uuid)))
             connection.commit()
             update_query = """
             UPDATE alerts
@@ -37,7 +37,7 @@ def alert_ack_service(request):
                 second_alert_response_time = NOW()
             WHERE second_link_uuid = UNHEX(REPLACE(%s, '-', ''))
             """
-            cursor.execute(update_query, (str(uuid), str(uuid)))
+            cursor.execute(update_query, (str(uuid)))
             connection.commit()
             cursor.close()
             connection.close()
