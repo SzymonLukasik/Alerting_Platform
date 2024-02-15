@@ -2,7 +2,7 @@
 data "google_client_config" "provider" {}
 
 data "google_container_cluster" "my_cluster" {
-  name     = "hello-cluster"
+  name     = "health-checker-cluster"
   location = "us-central1"
 }
 
@@ -12,6 +12,23 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(
     data.google_container_cluster.my_cluster.master_auth[0].cluster_ca_certificate,
   )
+}
+
+resource "google_container_cluster" "primary" {
+  name     = "health-checker-cluster"
+  location = "us-central1"
+
+  remove_default_node_pool = true
+  initial_node_count       = 1
+
+  master_auth {
+    username = ""
+    password = ""
+
+    client_certificate_config {
+      issue_client_certificate = false
+    }
+  }
 }
 
 resource "kubernetes_deployment" "example" {
