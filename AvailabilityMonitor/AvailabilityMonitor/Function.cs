@@ -21,7 +21,7 @@ public class Function : IHttpFunction
     private const string ServicesTable = "alerting.monitored_services";
     private const string CallsTable = "alerting.calls_copy2";
     private const string AlertsTable = "alerting.alerts";
-    private const string LinkTemplate = "https://test.com/alert?uuid={0}";
+    private const string LinkTemplate = "https://us-central1-inrio-401514.cloudfunctions.net/alert_ack_service?uuid={0}";
     private const string ExpectedQueryParameter = "run-availability-monitor";
     private readonly ILogger<Function> _logger;
     private readonly PublisherClient _messagesPublisherClient;
