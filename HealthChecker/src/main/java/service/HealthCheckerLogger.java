@@ -90,9 +90,9 @@ public class HealthCheckerLogger extends AbstractVerticle {
         StringBuilder values = new StringBuilder();
         for (Call call : batchedResults) {
             // Format timestamp to match myysql datetime format
-            values.append("('%s', '%s', %d, '%s', %d),".formatted(call.getUrl(), call.getTimestamp(), call.getResponseTimeMs(), call.getCallResult(), call.getStatusCode()));
+            values.append("(%d, '%s', '%s', %d, '%s', %d),".formatted(call.getServiceId(), call.getUrl(), call.getTimestamp(), call.getResponseTimeMs(), call.getCallResult(), call.getStatusCode()));
         }
         values.deleteCharAt(values.length() - 1);
-        return "INSERT INTO calls_copy (url, timestamp, responseTimeMs, callResult, statusCode) VALUES " + values.toString();
+        return "INSERT INTO calls_copy2 (service_id, url, timestamp, responseTimeMs, callResult, statusCode) VALUES " + values.toString();
     }
 }

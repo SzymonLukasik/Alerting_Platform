@@ -48,6 +48,10 @@ public class Task {
         return MonitorTo;
     }
 
+    public void setResourceCost(Integer resourceCost) {
+        this.ResourceCost = resourceCost;
+        
+    }
      public String toJson() {
         try {
             ObjectMapper mapper = new ObjectMapper();

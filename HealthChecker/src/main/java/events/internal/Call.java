@@ -7,19 +7,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 
 public class Call {
+    private Integer serviceId;
     private String url;
     private String timestamp;
     private Integer responseTimeMs;
     private CallResult callResult;
     private Integer statusCode;
 
-    @JsonCreator
-    public Call(@JsonProperty("url") String url, @JsonProperty("timestamp") String timestamp, @JsonProperty("responseTimeMs") Integer responseTimeMs, @JsonProperty("status") CallResult callResult, @JsonProperty("statusCode") Integer statusCode) {
+    public Call(@JsonProperty("serviceId") Integer serviceId, @JsonProperty("url") String url, @JsonProperty("timestamp") String timestamp, @JsonProperty("responseTimeMs") Integer responseTimeMs, @JsonProperty("status") CallResult callResult, @JsonProperty("statusCode") Integer statusCode) {
+        this.serviceId = serviceId;
         this.url = url;
         this.timestamp = timestamp;
         this.responseTimeMs = responseTimeMs;
         this.callResult = callResult;
         this.statusCode = statusCode;
+    }
+
+    public Integer getServiceId() {
+        return serviceId;
     }
 
     public String getUrl() {

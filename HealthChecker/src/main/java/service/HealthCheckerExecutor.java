@@ -79,7 +79,7 @@ public class HealthCheckerExecutor extends AbstractVerticle {
                     }
                     CallResult status = CallResult.fromStatusCode(statusCode, timedOut);
                     String timestampString = Instant.ofEpochMilli(start).toString().replace("T", " ").replace("Z", "");
-                    Call call = new Call(task.getMonitoredHttpServiceConfiguration().getUrl(), timestampString, responseTimeMs, status, statusCode);
+                    Call call = new Call(task.getMonitoredHttpServiceConfiguration().getId(), task.getMonitoredHttpServiceConfiguration().getUrl(), timestampString, responseTimeMs, status, statusCode);
                     vertx.eventBus().send("log.healthcheck", call.toJson());
                 } catch (Exception e) {
                     logger.error("Error performing health check: " + e.getMessage());

@@ -49,6 +49,7 @@ public class HealthCheckerService {
             subscriber = Subscriber.newBuilder(subscriptionName, (PubsubMessage message, AckReplyConsumer consumer) -> {
                 try {
                     Task task = parseTask(message.getData().toStringUtf8());
+                    task.setResourceCost(task.getResourceCost() + 1);
                     logger.info("Received task: " + task.toJson());
                     DateTime parsedMonitorTo = DateTime.parseRfc3339(task.getMonitorTo());
                     if (parsedMonitorTo.getValue() < System.currentTimeMillis()) {
