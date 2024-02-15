@@ -20,7 +20,7 @@ public class PubSubMessageSender : ICloudEventFunction<MessagePublishedData>
 {
     private readonly JsonSerializerOptions _jsonOptions = new()
     {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase, WriteIndented = true
+        WriteIndented = true
     };
 
     private readonly ILogger<PubSubMessageSender> _logger;
