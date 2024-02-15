@@ -40,7 +40,7 @@ resource "kubernetes_deployment" "example" {
 
       spec {
         container {
-          image = "us-central1-docker.pkg.dev/irio-402819/mimuw-labs/healthchecker:v1"
+          image = "us-central1-docker.pkg.dev/irio-402819/mimuw-labs/healthchecker:v2"
           name  = "healthchecker"
 
           port {
