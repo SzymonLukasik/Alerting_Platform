@@ -14,23 +14,6 @@ provider "kubernetes" {
   )
 }
 
-resource "google_container_cluster" "primary" {
-  name     = "health-checker-cluster"
-  location = "us-central1"
-
-  remove_default_node_pool = true
-  initial_node_count       = 1
-
-  master_auth {
-    username = ""
-    password = ""
-
-    client_certificate_config {
-      issue_client_certificate = false
-    }
-  }
-}
-
 resource "kubernetes_deployment" "example" {
   metadata {
     name = "healthchecker"
