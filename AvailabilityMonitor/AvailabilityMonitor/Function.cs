@@ -151,7 +151,7 @@ public class Function : IHttpFunction
             {
                 Subject = $"[Alert] Service {service.Url} is down",
                 Body =
-                    $"Attention! Service {service.Url} is down. Please check it. To resolve alert, click this link: {string.Format(LinkTemplate, new Guid(alert.FirstLinkUUID).ToString())}",
+                    $" (first admin) Attention! Service {service.Url} is down. Please check it. To resolve alert, click this link: {string.Format(LinkTemplate, new Guid(alert.FirstLinkUUID).ToString())}",
                 To = service.FirstAdminEmail,
                 ChannelType = MessageChannelType.Email
             };
@@ -165,7 +165,7 @@ public class Function : IHttpFunction
             {
                 Subject = $"[Alert] Service {service.Url} is down",
                 Body =
-                    $"Attention! Service {service.Url} is down. Please check it. To resolve alert, click this link: {string.Format(LinkTemplate, new Guid(alert.FirstLinkUUID).ToString())}",
+                    $" (first admin) Attention! Service {service.Url} is down. Please check it. To resolve alert, click this link: {string.Format(LinkTemplate, new Guid(alert.FirstLinkUUID).ToString())}",
                 To = service.FirstAdminPhoneNumber,
                 ChannelType = MessageChannelType.Sms
             };
@@ -177,7 +177,7 @@ public class Function : IHttpFunction
         {
             Subject = $"[Alert] Service {service.Url} is down",
             Body =
-                $"Attention! Service {service.Url} is down. Please check it. To resolve alert, click this link: {string.Format(LinkTemplate, new Guid(alert.FirstLinkUUID).ToString())}",
+                $" (first admin) Attention! Service {service.Url} is down. Please check it. To resolve alert, click this link: {string.Format(LinkTemplate, new Guid(alert.FirstLinkUUID).ToString())}",
             ChannelType = MessageChannelType.Log
         };
 
