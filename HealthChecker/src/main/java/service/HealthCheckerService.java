@@ -2,6 +2,7 @@ package service;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.google.api.client.util.DateTime;
 import com.google.api.gax.rpc.ApiException;
 import com.google.cloud.pubsub.v1.AckReplyConsumer;
 import com.google.cloud.pubsub.v1.Subscriber;
@@ -49,6 +50,12 @@ public class HealthCheckerService {
                 try {
                     Task task = parseTask(message.getData().toStringUtf8());
                     logger.info("Received task: " + task.toJson());
+                    DateTime parsedMonitorTo = DateTime.parseRfc3339(task.getMonitorTo());
+                    if (parsedMonitorTo.getValue() < System.currentTimeMillis()) {
+                        logger.info("Task expired, sending ack");
+                        consumer.ack();
+                        return;
+                    }
                     if (currentResourceUsage.get() + task.getResourceCost() <= config.getMaxResourceCost()) {
                         logger.info("Resource available, sending task to queue");
                         currentResourceUsage.addAndGet(task.getResourceCost());
