@@ -25,10 +25,17 @@ def alert_ack_service(request):
             # Update the alert record
             update_query = """
             UPDATE alerts
-            SET responseStatus = 'responded',
-                firstAlertResponseTime = NOW()
-            WHERE firstLinkUUID = UNHEX(REPLACE(%s, '-', ''))
-            OR secondLinkUUID = UNHEX(REPLACE(%s, '-', ''))
+            SET response_status = 'first_admin_responded',
+                first_alert_response_time = NOW()
+            WHERE first_link_uuid = UNHEX(REPLACE(%s, '-', ''))
+            """
+            cursor.execute(update_query, (str(uuid), str(uuid)))
+            connection.commit()
+            update_query = """
+            UPDATE alerts
+            SET response_status = 'second_admin_responded',
+                second_alert_response_time = NOW()
+            WHERE second_link_uuid = UNHEX(REPLACE(%s, '-', ''))
             """
             cursor.execute(update_query, (str(uuid), str(uuid)))
             connection.commit()
