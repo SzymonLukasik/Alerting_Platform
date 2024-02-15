@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: healthchecker
-        image: us-central1-docker.pkg.dev/irio-402819/mimuw-labs/healthchecker:v1
+        image: us-central1-docker.pkg.dev/irio-402819/mimuw-labs/healthchecker:v2
         ports:
         - containerPort: 8080
         volumeMounts:
