@@ -91,7 +91,7 @@ public class Function : IHttpFunction
                                            inner join {ServicesTable} s
                                                       on a.service_id = s.id
                                   where a.response_status = 'waiting_for_first_admin'
-                                    and a.first_alert_time < date_sub(now(), interval (s.first_admin_allowed_response_time_ms * 1000) second)
+                                    and a.first_alert_time < date_sub(now(), interval (s.first_admin_allowed_response_time_ms / 1000) second)
                               """;
 
         var alerts = await dbConnection.QueryAsync<Alert>(query);
@@ -108,7 +108,7 @@ public class Function : IHttpFunction
                                            inner join {ServicesTable} s
                                                       on a.service_id = s.id
                                   where a.response_status = 'waiting_for_second_admin'
-                                    and a.second_alert_time < date_sub(now(), interval (s.second_admin_allowed_response_time_ms * 1000) second)
+                                    and a.second_alert_time < date_sub(now(), interval (s.second_admin_allowed_response_time_ms / 1000) second)
                               """;
 
         var alerts = await dbConnection.QueryAsync<Alert>(query);
